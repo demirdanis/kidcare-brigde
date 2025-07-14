@@ -1,0 +1,15 @@
+{
+  "name": "api-gateway",
+  "version": "0.1.0",
+  "description": "KidCare Bridge Api Gateway (Hasura)",
+  "main": "index.js",
+  "scripts": {
+    "console": "hasura console --project kidcare-bridge --admin-secret a8f5e2d9c7b3f1e6d4a2c8e5b9f7d3a1e8c6a4f2d7b5e9c3a6f4d2e8b1c9f5a7 --api-host http://localhost --api-port 9001 --console-port 9000",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Demir Danış",
+  "license": "MIT",
+  "devDependencies": {
+    "hasura-cli": "^2.36.2"
+  }
+}

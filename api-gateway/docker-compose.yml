@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  pgadmin:
+    image: dpage/pgadmin4:8.5
+    depends_on:
+      - "kidcare-bridge-metadata"
+      - "kidcare-bridge-core"
+    ports:
+      - "${PGADMIN_PORT:-35999}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    env_file:
+      - .env
+
+  kidcare-bridge-metadata:
+    image: postgis/postgis:16-3.4
+    restart: always
+    volumes:
+      - ./data/kidcare_bridge_metadata_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_METADATA_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - .env
+
+  kidcare-bridge-core:
+    image: postgis/postgis:16-3.4
+    restart: always
+    volumes:
+      - ./data/kidcare_bridge_core_db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_CORE_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_CORE_PORT:-5111}:5432"
+    env_file:
+      - .env
+
+  hasura:
+    image: hasura/graphql-engine:v2.41.0.cli-migrations-v3
+    ports:
+      - "${HASURA_PORT_1:-23564}:23564"
+      - "${HASURA_PORT_2:-43172}:43172"
+    depends_on:
+      - "kidcare-bridge-metadata"
+      - "kidcare-bridge-core"
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./kidcare-bridge:/app
+      - ./kidcare-bridge/migrations:/hasura-migrations
+      - ./kidcare-bridge/metadata:/hasura-metadata
+    environment:
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@kidcare-bridge-metadata:5432/${POSTGRES_METADATA_DB}
+      HASURA_GRAPHQL_KIDCARE_BRIDGE_CORE_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@kidcare-bridge-core:5432/${POSTGRES_CORE_DB}
+      HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
+      HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE:-false}
+      HASURA_GRAPHQL_ENABLED_APIS: "graphql,metadata,pgdump"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      HASURA_GRAPHQL_SERVER_PORT: ${HASURA_GRAPHQL_SERVER_PORT:-43172}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_DEV_MODE: ${HASURA_GRAPHQL_DEV_MODE:-true}
+      HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: ${HASURA_GRAPHQL_UNAUTHORIZED_ROLE:-anonymous}
+      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: ${HASURA_GRAPHQL_EXPERIMENTAL_FEATURES:-naming_convention}
+      HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION: ${HASURA_GRAPHQL_DEFAULT_NAMING_CONVENTION:-graphql-default}
+      HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS: ${HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS:-false}
+    env_file:
+      - .env
+
+volumes:
+  pgadmin_data:

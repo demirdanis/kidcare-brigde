@@ -1,0 +1,9 @@
+- name: kidcare-bridge-core
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_KIDCARE_BRIDGE_CORE_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include kidcare-bridge-core/tables/tables.yaml"

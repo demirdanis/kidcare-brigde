@@ -1,0 +1,7 @@
+version: 3
+endpoint: http://localhost:43172
+admin_secret: a8f5e2d9c7b3f1e6d4a2c8e5b9f7d3a1e8c6a4f2d7b5e9c3a6f4d2e8b1c9f5a7
+metadata_directory: metadata
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://localhost:3000
