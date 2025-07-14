@@ -1,0 +1,45 @@
+name: migrate for api gateway
+
+on:
+  push:
+    tags:
+      - api_gateway@*
+  workflow_dispatch:
+
+jobs:
+  hasura_kidcare_bridge_core_migration:
+    name: Hasura KidCare Bridge Migration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Apply hasura migrations
+        uses: smplrspace/hasura-action@v3
+        with:
+          args: migrate apply --project kidcare-bridge --database-name kidcare-bridge-core
+        env:
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_SECRET }}
+          HASURA_WORKDIR: api-gateway
+          HASURA_ENGINE_VERSION: v2.45.1
+      - name: Migration OK for KidCare Bridge
+        run: echo "Migration OK for KidCare Bridge"
+
+  apply_metadata:
+    name: Apply Hasura Metadata
+    runs-on: ubuntu-latest
+    needs: hasura_kidcare_bridge_core_migration
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Apply Hasura metadata
+        uses: smplrspace/hasura-action@v3
+        with:
+          args: metadata apply --project kidcare-bridge
+        env:
+          HASURA_ENDPOINT: ${{ secrets.HASURA_ENDPOINT }}
+          HASURA_ADMIN_SECRET: ${{ secrets.HASURA_SECRET }}
+          HASURA_WORKDIR: api-gateway
+          HASURA_ENGINE_VERSION: v2.45.1
+      - name: Metadata OK
+        run: echo "Metadata OK"
