@@ -1,0 +1,10 @@
+table:
+  name: daily_report_details
+  schema: public
+object_relationships:
+  - name: daily_report
+    using:
+      foreign_key_constraint_on: daily_report_id
+  - name: report_item
+    using:
+      foreign_key_constraint_on: report_item_id

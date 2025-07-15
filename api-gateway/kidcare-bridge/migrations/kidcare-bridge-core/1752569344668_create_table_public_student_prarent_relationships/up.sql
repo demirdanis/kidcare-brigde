@@ -1,0 +1,1 @@
+CREATE TABLE "public"."student_prarent_relationships" ("relationship" text NOT NULL, PRIMARY KEY ("relationship") , UNIQUE ("relationship"));COMMENT ON TABLE "public"."student_prarent_relationships" IS E'student prarent relationships';

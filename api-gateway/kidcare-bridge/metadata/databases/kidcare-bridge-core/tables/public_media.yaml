@@ -1,0 +1,24 @@
+table:
+  name: media
+  schema: public
+object_relationships:
+  - name: class
+    using:
+      foreign_key_constraint_on: class_id
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+  - name: student
+    using:
+      foreign_key_constraint_on: student_id
+  - name: uploaded_by_user
+    using:
+      foreign_key_constraint_on: uploaded_by
+array_relationships:
+  - name: media_tags
+    using:
+      foreign_key_constraint_on:
+        column: media_id
+        table:
+          name: media_tags
+          schema: public

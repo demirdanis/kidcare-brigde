@@ -1,0 +1,22 @@
+table:
+  name: daily_report_items
+  schema: public
+object_relationships:
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+array_relationships:
+  - name: daily_report_details
+    using:
+      foreign_key_constraint_on:
+        column: report_item_id
+        table:
+          name: daily_report_details
+          schema: public
+  - name: daily_report_item_types
+    using:
+      foreign_key_constraint_on:
+        column: report_item_id
+        table:
+          name: daily_report_item_types
+          schema: public

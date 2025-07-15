@@ -1,0 +1,18 @@
+table:
+  name: medications
+  schema: public
+object_relationships:
+  - name: prescribed_by_user
+    using:
+      foreign_key_constraint_on: prescribed_by
+  - name: student
+    using:
+      foreign_key_constraint_on: student_id
+array_relationships:
+  - name: medication_logs
+    using:
+      foreign_key_constraint_on:
+        column: medication_id
+        table:
+          name: medication_logs
+          schema: public

@@ -1,0 +1,13 @@
+table:
+  name: weekly_schedule
+  schema: public
+object_relationships:
+  - name: class
+    using:
+      foreign_key_constraint_on: class_id
+  - name: subject
+    using:
+      foreign_key_constraint_on: subject_id
+  - name: teacher
+    using:
+      foreign_key_constraint_on: teacher_id

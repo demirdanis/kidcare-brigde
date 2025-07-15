@@ -1,0 +1,1 @@
+INSERT INTO "public"."roles"("description", "name", "created_at", "updated_at", "id") VALUES (E'school manager', E'SCHOOL_MANAGER', E'2025-07-15T08:33:02.885365+00:00', E'2025-07-15T08:33:02.885365+00:00', E'6c0e5012-06e6-4b8c-9daa-6c5af6a911d7');

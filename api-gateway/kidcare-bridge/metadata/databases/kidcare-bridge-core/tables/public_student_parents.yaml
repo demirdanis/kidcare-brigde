@@ -1,0 +1,10 @@
+table:
+  name: student_parents
+  schema: public
+object_relationships:
+  - name: parent
+    using:
+      foreign_key_constraint_on: parent_id
+  - name: student
+    using:
+      foreign_key_constraint_on: student_id

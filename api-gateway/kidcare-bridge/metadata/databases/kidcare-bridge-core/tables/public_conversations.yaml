@@ -1,0 +1,25 @@
+table:
+  name: conversations
+  schema: public
+object_relationships:
+  - name: class
+    using:
+      foreign_key_constraint_on: class_id
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+array_relationships:
+  - name: conversation_participants
+    using:
+      foreign_key_constraint_on:
+        column: conversation_id
+        table:
+          name: conversation_participants
+          schema: public
+  - name: messages
+    using:
+      foreign_key_constraint_on:
+        column: conversation_id
+        table:
+          name: messages
+          schema: public

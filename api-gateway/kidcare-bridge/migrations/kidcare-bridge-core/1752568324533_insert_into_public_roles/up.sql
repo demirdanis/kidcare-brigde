@@ -1,0 +1,1 @@
+INSERT INTO "public"."roles"("description", "name", "created_at", "updated_at", "id") VALUES (E'parent', E'PARENT', E'2025-07-15T08:32:04.505684+00:00', E'2025-07-15T08:32:04.505684+00:00', E'e82f8475-373e-4322-889d-aef659434f14');

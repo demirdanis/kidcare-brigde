@@ -1,0 +1,74 @@
+table:
+  name: users
+  schema: public
+object_relationships:
+  - name: role
+    using:
+      foreign_key_constraint_on: role_id
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+array_relationships:
+  - name: classes_as_main_teacher
+    using:
+      foreign_key_constraint_on:
+        column: main_teacher_id
+        table:
+          name: classes
+          schema: public
+  - name: classes_as_secondary_teacher
+    using:
+      foreign_key_constraint_on:
+        column: secondary_teacher_id
+        table:
+          name: classes
+          schema: public
+  - name: conversation_participants
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: conversation_participants
+          schema: public
+  - name: daily_reports
+    using:
+      foreign_key_constraint_on:
+        column: teacher_id
+        table:
+          name: daily_reports
+          schema: public
+  - name: media_uploads
+    using:
+      foreign_key_constraint_on:
+        column: uploaded_by
+        table:
+          name: media
+          schema: public
+  - name: messages_sent
+    using:
+      foreign_key_constraint_on:
+        column: sender_id
+        table:
+          name: messages
+          schema: public
+  - name: notifications
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: notifications
+          schema: public
+  - name: student_parents
+    using:
+      foreign_key_constraint_on:
+        column: parent_id
+        table:
+          name: student_parents
+          schema: public
+  - name: weekly_schedules
+    using:
+      foreign_key_constraint_on:
+        column: teacher_id
+        table:
+          name: weekly_schedule
+          schema: public

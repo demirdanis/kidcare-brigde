@@ -1,0 +1,4 @@
+table:
+  name: student_prarent_relationships
+  schema: public
+is_enum: true

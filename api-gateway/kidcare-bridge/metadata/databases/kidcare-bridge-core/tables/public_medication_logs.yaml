@@ -1,0 +1,10 @@
+table:
+  name: medication_logs
+  schema: public
+object_relationships:
+  - name: administered_by_user
+    using:
+      foreign_key_constraint_on: administered_by
+  - name: medication
+    using:
+      foreign_key_constraint_on: medication_id

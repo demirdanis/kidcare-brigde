@@ -1,0 +1,15 @@
+table:
+  name: meals
+  schema: public
+object_relationships:
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
+array_relationships:
+  - name: meal_calendar_items
+    using:
+      foreign_key_constraint_on:
+        column: meal_id
+        table:
+          name: meal_calendar_items
+          schema: public

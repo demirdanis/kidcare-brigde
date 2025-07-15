@@ -1,0 +1,1 @@
+INSERT INTO "public"."roles"("description", "name", "created_at", "updated_at", "id") VALUES (E'super admin', E'SUPER_ADMIN', E'2025-07-15T08:31:48.216838+00:00', E'2025-07-15T08:31:48.216838+00:00', E'bc201a5f-0a1c-47b3-9454-1e630ef62634');

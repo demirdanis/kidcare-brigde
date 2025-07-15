@@ -1,0 +1,10 @@
+table:
+  name: meal_calendar_items
+  schema: public
+object_relationships:
+  - name: meal
+    using:
+      foreign_key_constraint_on: meal_id
+  - name: meal_calendar
+    using:
+      foreign_key_constraint_on: meal_calendar_id

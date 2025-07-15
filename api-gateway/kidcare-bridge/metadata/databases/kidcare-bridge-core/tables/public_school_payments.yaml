@@ -1,0 +1,10 @@
+table:
+  name: school_payments
+  schema: public
+object_relationships:
+  - name: payment_plan
+    using:
+      foreign_key_constraint_on: payment_plan_id
+  - name: school
+    using:
+      foreign_key_constraint_on: school_id
