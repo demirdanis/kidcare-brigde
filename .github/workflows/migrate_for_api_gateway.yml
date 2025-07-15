@@ -3,7 +3,7 @@ name: migrate for api gateway
 on:
   push:
     tags:
-      - api_gateway@*
+      - api-gateway@*
   workflow_dispatch:
 
 jobs:
