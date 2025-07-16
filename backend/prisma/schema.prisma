@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Ana modeller (Hasura'daki tablolarla uyumlu)
+model Schools {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  address     String
+  phone       String   @unique
+  email       String   @unique
+  website     String?
+  description String?
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  users    Users[]
+  classes  Classes[]
+  students Students[]
+
+  @@map("schools")
+}
+
+model Users {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  firstName    String    @map("first_name")
+  lastName     String    @map("last_name")
+  phone        String?
+  avatarUrl    String?   @map("avatar_url")
+  roleId       String    @map("role_id") @db.Uuid
+  schoolId     String    @map("school_id") @db.Uuid
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLogin    DateTime? @map("last_login") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  school         Schools          @relation(fields: [schoolId], references: [id])
+  studentParents StudentParents[]
+
+  @@map("users")
+}
+
+model Classes {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String
+  description        String
+  ageGroupMin        Int       @map("age_group_min")
+  ageGroupMax        Int       @map("age_group_max")
+  capacity           Int
+  schoolId           String    @map("school_id") @db.Uuid
+  mainTeacherId      String    @map("main_teacher_id") @db.Uuid
+  secondaryTeacherId String    @map("secondary_teacher_id") @db.Uuid
+  isActive           Boolean   @default(true) @map("is_active")
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  school   Schools    @relation(fields: [schoolId], references: [id])
+  students Students[]
+
+  @@map("classes")
+}
+
+model Students {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName      String    @map("first_name")
+  lastName       String    @map("last_name")
+  birthDate      DateTime  @map("birth_date") @db.Date
+  gender         String?
+  bloodType      String?   @map("blood_type")
+  allergies      String?
+  medicalNotes   String?   @map("medical_notes")
+  photoUrl       String?   @map("photo_url")
+  classId        String    @map("class_id") @db.Uuid
+  schoolId       String    @map("school_id") @db.Uuid
+  isActive       Boolean   @default(true) @map("is_active")
+  enrollmentDate DateTime  @default(now()) @map("enrollment_date") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  class          Classes          @relation(fields: [classId], references: [id])
+  school         Schools          @relation(fields: [schoolId], references: [id])
+  studentParents StudentParents[]
+
+  @@map("students")
+}
+
+model StudentParents {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  studentId        String   @map("student_id") @db.Uuid
+  parentId         String   @map("parent_id") @db.Uuid
+  relationship     String   // ENUM values: FATHER, MOTHER, etc.
+  isPrimaryContact Boolean  @default(false) @map("is_primary_contact")
+  canPickup        Boolean  @default(true) @map("can_pickup")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  // Relations
+  student Students @relation(fields: [studentId], references: [id])
+  parent  Users    @relation(fields: [parentId], references: [id])
+
+  @@map("student_parents")
+}

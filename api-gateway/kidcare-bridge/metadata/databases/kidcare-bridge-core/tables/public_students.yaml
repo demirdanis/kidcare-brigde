@@ -58,3 +58,27 @@ array_relationships:
         table:
           name: student_payments
           schema: public
+select_permissions:
+  - role: student_parent
+    permission:
+      columns:
+        - allergies
+        - birth_date
+        - blood_type
+        - class_id
+        - created_at
+        - enrollment_date
+        - first_name
+        - gender
+        - id
+        - is_active
+        - last_name
+        - medical_notes
+        - photo_url
+        - school_id
+        - updated_at
+      filter:
+        student_parents:
+          parent_id:
+            _eq: X-Hasura-User-Id
+    comment: ""

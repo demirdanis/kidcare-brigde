@@ -5,3 +5,74 @@ object_relationships:
   - name: school
     using:
       foreign_key_constraint_on: school_id
+insert_permissions:
+  - role: school_manager
+    permission:
+      check: {}
+      columns:
+        - age_group_max
+        - age_group_min
+        - capacity
+        - description
+        - is_active
+        - main_teacher_id
+        - name
+        - school_id
+        - secondary_teacher_id
+    comment: ""
+select_permissions:
+  - role: school_manager
+    permission:
+      columns:
+        - is_active
+        - age_group_max
+        - age_group_min
+        - capacity
+        - description
+        - name
+        - created_at
+        - updated_at
+        - id
+        - main_teacher_id
+        - school_id
+        - secondary_teacher_id
+      filter: {}
+    comment: ""
+  - role: teacher
+    permission:
+      columns:
+        - is_active
+        - age_group_max
+        - age_group_min
+        - capacity
+        - description
+        - name
+        - created_at
+        - updated_at
+        - id
+        - main_teacher_id
+        - school_id
+        - secondary_teacher_id
+      filter: {}
+    comment: ""
+update_permissions:
+  - role: school_manager
+    permission:
+      columns:
+        - age_group_max
+        - age_group_min
+        - capacity
+        - description
+        - is_active
+        - main_teacher_id
+        - name
+        - school_id
+        - secondary_teacher_id
+      filter: {}
+      check: null
+    comment: ""
+delete_permissions:
+  - role: school_manager
+    permission:
+      filter: {}
+    comment: ""

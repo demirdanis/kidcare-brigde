@@ -1,0 +1,23 @@
+meta {
+  name: Register
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/auth/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+      "email": "demirdanis@gmail.com",
+      "password": "xxxx",
+      "firstName": "Demir",
+      "lastName": "Danış",
+      "phone": "+905061078477",
+      "roleId": "e82f8475-373e-4322-889d-aef659434f14",
+      "schoolId": "818898e2-7450-4b4e-869e-3b1d6147a153"
+    }
+}

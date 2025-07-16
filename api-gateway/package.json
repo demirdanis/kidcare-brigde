@@ -10,7 +10,6 @@
   "author": "Demir Danış",
   "license": "MIT",
   "devDependencies": {
-    "hasura-cli": "^2.36.2",
     "@changesets/cli": "^2.28.1"
   }
 }

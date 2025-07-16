@@ -72,3 +72,67 @@ array_relationships:
         table:
           name: weekly_schedule
           schema: public
+insert_permissions:
+  - role: super_admin
+    permission:
+      check: {}
+      columns:
+        - avatar_url
+        - created_at
+        - email
+        - first_name
+        - id
+        - is_active
+        - last_login
+        - last_name
+        - password_hash
+        - phone
+        - role_id
+        - school_id
+        - updated_at
+    comment: ""
+select_permissions:
+  - role: super_admin
+    permission:
+      columns:
+        - is_active
+        - avatar_url
+        - email
+        - first_name
+        - last_name
+        - password_hash
+        - phone
+        - created_at
+        - last_login
+        - updated_at
+        - id
+        - role_id
+        - school_id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
+update_permissions:
+  - role: super_admin
+    permission:
+      columns:
+        - is_active
+        - avatar_url
+        - email
+        - first_name
+        - last_name
+        - password_hash
+        - phone
+        - created_at
+        - last_login
+        - updated_at
+        - id
+        - role_id
+        - school_id
+      filter: {}
+      check: {}
+    comment: ""
+delete_permissions:
+  - role: super_admin
+    permission:
+      filter: {}
+    comment: ""
