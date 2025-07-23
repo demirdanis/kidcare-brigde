@@ -1,0 +1,102 @@
+{
+  "destructive-foreground": {
+    "light": "base/white",
+    "dark": "neutral/900"
+  },
+  "border": {
+    "light": "neutral/300",
+    "dark": "neutral/700"
+  },
+  "input": {
+    "light": "neutral/300",
+    "dark": "neutral/700"
+  },
+  "ring": {
+    "light": "sky/500",
+    "dark": "sky/400"
+  },
+  "secondary-brand": {
+    "light": "slate/600",
+    "dark": "slate/400"
+  },
+  "secondary-brand-hover": {
+    "light": "slate/700",
+    "dark": "slate/500"
+  },
+  "secondary-brand-back": {
+    "light": "slate/50",
+    "dark": "slate/950"
+  },
+  "background": {
+    "light": "base/white",
+    "dark": "neutral/900"
+  },
+  "foreground": {
+    "light": "neutral/900",
+    "dark": "base/white"
+  },
+  "card": {
+    "light": "base/white",
+    "dark": "neutral/900"
+  },
+  "card-foreground": {
+    "light": "neutral/900",
+    "dark": "base/white"
+  },
+  "popover": {
+    "light": "base/white",
+    "dark": "neutral/900"
+  },
+  "popover-foreground": {
+    "light": "neutral/900",
+    "dark": "base/white"
+  },
+  "primary": {
+    "light": "sky/600",
+    "dark": "sky/500"
+  },
+  "primary-foreground": {
+    "light": "base/white",
+    "dark": "neutral/900"
+  },
+  "primary-hover": {
+    "light": "sky/700",
+    "dark": "sky/600"
+  },
+  "secondary": {
+    "light": "neutral/100",
+    "dark": "neutral/800"
+  },
+  "secondary-foreground": {
+    "light": "neutral/600",
+    "dark": "neutral/300"
+  },
+  "secondary-hover": {
+    "light": "neutral/200",
+    "dark": "neutral/700"
+  },
+  "muted": {
+    "light": "neutral/100",
+    "dark": "neutral/800"
+  },
+  "muted-foreground": {
+    "light": "neutral/500",
+    "dark": "neutral/300"
+  },
+  "accent": {
+    "light": "pink/50",
+    "dark": "pink/900"
+  },
+  "accent-foreground": {
+    "light": "pink/900",
+    "dark": "pink/100"
+  },
+  "destructive": {
+    "light": "rose/600",
+    "dark": "rose/500"
+  },
+  "destructive-hover": {
+    "light": "rose/700",
+    "dark": "rose/400"
+  }
+}

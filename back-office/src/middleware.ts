@@ -7,7 +7,7 @@ type UserRole = "teacher" | "admin" | "parent";
 // Token'dan kullanıcı rolünü çıkaran fonksiyon
 function getUserRole(request: NextRequest): UserRole | null {
   console.log({ request });
-  return "teacher";
+  return null; //"teacher";
 }
 
 export function middleware(request: NextRequest) {
@@ -54,14 +54,11 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Şu yolları hariç tut:
-     * - api (API rotaları)
-     * - _next/static (static dosyalar)
-     * - _next/image (image optimization dosyaları)
-     * - favicon.ico (favicon dosyası)
-     * - public klasöründeki dosyalar
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|public).*)",
+    "/",
+    "/login",
+    "/classes/:path*",
+    "/admin/:path*",
+    "/home",
+    "/unauthorized",
   ],
 };

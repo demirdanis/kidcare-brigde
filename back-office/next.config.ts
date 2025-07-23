@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true, // Image optimizasyonunu kapat
+    // veya
+    formats: ["image/avif", "image/webp"], // WebP formatını belirt
     remotePatterns: [
       // Tüm domainleri kabul et (genel çözüm)
       {
