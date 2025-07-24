@@ -6,7 +6,6 @@ type UserRole = "teacher" | "admin" | "parent";
 
 // Token'dan kullanıcı rolünü çıkaran fonksiyon
 function getUserRole(request: NextRequest): UserRole | null {
-  console.log({ request });
   return null; //"teacher";
 }
 
@@ -15,8 +14,6 @@ export function middleware(request: NextRequest) {
 
   // Giriş yapılmamışsa login sayfasına yönlendir
   const userRole = getUserRole(request);
-  console.log(userRole);
-  console.log(pathname);
 
   if (!userRole) {
     // Login sayfasındaysak yönlendirme yapma

@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 
+import { AuthDto, AuthResponseDto } from 'kidcare-bridge-shared';
 import {
   ConflictException,
   Injectable,
@@ -12,7 +13,6 @@ import {
   USER_WITH_SCHOOL_INCLUDE,
 } from './types/user.types';
 
-import { AuthResponseDto } from './dtos/auth-response.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from './types/jwt.types';
 import { JwtService } from '@nestjs/jwt';
@@ -20,6 +20,8 @@ import { LoginDto } from './dtos/login.dto';
 import { PrismaService } from '../../database/prisma/prisma.service';
 import { RegisterDto } from './dtos/register.dto';
 import { getRoleHasuraKeyById } from './utils/role.utils';
+import { prepareErrorResponse } from 'src/utils/error.utils';
+import { prepareSuccessResponse } from 'src/utils/succes.utils';
 
 @Injectable()
 export class AuthService {
@@ -80,7 +82,7 @@ export class AuthService {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      return prepareErrorResponse('Invalid credentials');
     }
 
     return this.generateTokenResponse(user);
@@ -94,7 +96,7 @@ export class AuthService {
       });
 
       if (existingUser) {
-        throw new ConflictException('User with this email already exists');
+        return prepareErrorResponse('Invalid credentials');
       }
 
       // Hash password
@@ -135,7 +137,7 @@ export class AuthService {
     });
 
     if (!user || !user.school?.isActive) {
-      throw new UnauthorizedException('User not found or inactive');
+      return prepareErrorResponse('Invalid credentials');
     }
 
     return this.generateTokenResponse(user);
@@ -145,7 +147,7 @@ export class AuthService {
     const expiresIn = this.configService.get<string>('jwt.expiresIn', '1y');
     const access_token = this.createJwtPayloadAsync(user, expiresIn);
 
-    return {
+    return prepareSuccessResponse<AuthDto>({
       access_token,
       token_type: 'Bearer',
       expires_in: this.parseExpirationTime(expiresIn),
@@ -158,7 +160,7 @@ export class AuthService {
         schoolId: user.schoolId,
         school: user.school,
       },
-    };
+    });
   }
 
   private createJwtPayloadAsync(

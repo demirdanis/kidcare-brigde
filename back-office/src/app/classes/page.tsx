@@ -7,7 +7,6 @@ export default function Classes() {
   const router = useRouter();
 
   const handleClassClick = (classId: number) => {
-    console.log("Sınıf seçildi:", classId);
     router.push(`/students/${classId}`);
   };
 

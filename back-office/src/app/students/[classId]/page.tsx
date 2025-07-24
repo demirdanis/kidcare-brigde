@@ -13,7 +13,6 @@ export default function StudentsPage() {
   const students = mockDataService.students[classId] || [];
 
   const handleStudentClick = (studentId: number) => {
-    console.log("Öğrenci seçildi:", studentId);
     router.push(`/student/${studentId}`);
   };
 

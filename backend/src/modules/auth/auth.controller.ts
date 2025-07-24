@@ -16,11 +16,11 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
-import { AuthResponseDto } from './dtos/auth-response.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { Public } from './decorators/public.decorator';
 import { CurrentUserType } from './types/user.types';
+import { AuthResponseDto } from 'kidcare-bridge-shared';
 
 @ApiTags('Authentication')
 @Controller('auth')

@@ -26,9 +26,6 @@ const preview: Preview = {
         document.body.removeChild(tempDiv);
 
         root.style.setProperty("--font-comfortaa", comfortaaFont);
-
-        console.log("🎨 Fonts loaded:");
-        console.log("Comfortaa:", comfortaaFont);
       }, []);
 
       return (

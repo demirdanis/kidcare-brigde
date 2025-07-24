@@ -3,16 +3,20 @@ import { Eye, EyeOff } from "lucide-react";
 import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ILogin } from "./Login.types";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const Login = () => {
+export const Login = ({ onLogin }: ILogin) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSignIn = () => {};
+  const handleSignIn = () => {
+    onLogin?.(email, password);
+  };
+
   return (
     <div
       className="min-h-screen relative overflow-hidden bg-soft-gradient"
@@ -25,12 +29,6 @@ export const Login = () => {
     >
       {/* Overlay for better readability */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/60 via-background/40 to-background/60 backdrop-blur-[1px]"></div>
-
-      {/* Kreş temalı dekoratif elementler */}
-      <div className="absolute top-10 left-10 w-20 h-20 bg-primary/20 rounded-full animate-pulse-soft"></div>
-      <div className="absolute top-32 right-16 w-16 h-16 bg-accent/20 rounded-full animate-bounce-gentle"></div>
-      <div className="absolute bottom-20 left-20 w-24 h-24 bg-secondary/20 rounded-full animate-pulse-soft"></div>
-      <div className="absolute bottom-40 right-10 w-12 h-12 bg-muted/40 rounded-full animate-bounce-gentle"></div>
 
       {/* Login formu */}
       <div className="relative z-10 flex items-center justify-center min-h-screen p-8">

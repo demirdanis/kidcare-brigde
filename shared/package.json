@@ -1,0 +1,25 @@
+{
+  "name": "kidcare-bridge-shared",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@nestjs/swagger": "11.2.0",
+    "class-validator": "^0.14.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@nestjs/swagger": "11.2.0",
+    "class-validator": "^0.14.2"
+  }
+}
