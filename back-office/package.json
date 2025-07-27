@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3111",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -22,6 +22,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "js-cookie": "3.0.5",
+    "jsonwebtoken": "9.0.2",
     "kidcare-bridge-shared": "file:../shared",
     "lucide-react": "^0.525.0",
     "next": "15.3.5",
@@ -29,6 +30,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.60.0",
+    "react-toastify": "^11.0.5",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.0.5"
@@ -37,6 +39,7 @@
     "@eslint/eslintrc": "^3",
     "@storybook/nextjs": "^9.0.18",
     "@types/js-cookie": "3.0.3",
+    "@types/jsonwebtoken": "9.0.5",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -27,10 +27,4 @@ export class UserDto {
   };
 }
 
-export class UserResponseDto extends BaseResponseDto<UserDto> {
-  @ApiProperty({
-    description: "User response data",
-    type: () => UserDto,
-  })
-  data?: UserDto;
-}
+export class UserResponseDto extends BaseResponseDto<UserDto> {}

@@ -8,108 +8,102 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Ana modeller (Hasura'daki tablolarla uyumlu)
-model Schools {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model classes {
+  id                   String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                 String
+  description          String
+  age_group_min        Int
+  age_group_max        Int
+  capacity             Int
+  school_id            String     @db.Uuid
+  main_teacher_id      String     @db.Uuid
+  secondary_teacher_id String     @db.Uuid
+  is_active            Boolean    @default(true)
+  created_at           DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime   @default(now()) @db.Timestamptz(6)
+  img_url              String?
+  schools              schools    @relation(fields: [school_id], references: [id])
+  students             students[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model schools {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name        String
   address     String
-  phone       String   @unique
-  email       String   @unique
+  phone       String     @unique
+  email       String     @unique
   website     String?
   description String?
-  isActive    Boolean  @default(true) @map("is_active")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  // Relations
-  users    Users[]
-  classes  Classes[]
-  students Students[]
-
-  @@map("schools")
+  is_active   Boolean    @default(true)
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  classes     classes[]
+  students    students[]
+  users       users[]
 }
 
-model Users {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email        String    @unique
-  passwordHash String    @map("password_hash")
-  firstName    String    @map("first_name")
-  lastName     String    @map("last_name")
-  phone        String?
-  avatarUrl    String?   @map("avatar_url")
-  roleId       String    @map("role_id") @db.Uuid
-  schoolId     String    @map("school_id") @db.Uuid
-  isActive     Boolean   @default(true) @map("is_active")
-  lastLogin    DateTime? @map("last_login") @db.Timestamptz(6)
-  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  // Relations
-  school         Schools          @relation(fields: [schoolId], references: [id])
-  studentParents StudentParents[]
-
-  @@map("users")
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
 }
 
-model Classes {
-  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name               String
-  description        String
-  ageGroupMin        Int       @map("age_group_min")
-  ageGroupMax        Int       @map("age_group_max")
-  capacity           Int
-  schoolId           String    @map("school_id") @db.Uuid
-  mainTeacherId      String    @map("main_teacher_id") @db.Uuid
-  secondaryTeacherId String    @map("secondary_teacher_id") @db.Uuid
-  isActive           Boolean   @default(true) @map("is_active")
-  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  // Relations
-  school   Schools    @relation(fields: [schoolId], references: [id])
-  students Students[]
-
-  @@map("classes")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model student_parents {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  student_id         String   @db.Uuid
+  parent_id          String   @db.Uuid
+  relationship       String
+  is_primary_contact Boolean  @default(false)
+  can_pickup         Boolean  @default(true)
+  created_at         DateTime @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime @default(now()) @db.Timestamptz(6)
+  users              users    @relation(fields: [parent_id], references: [id])
+  students           students @relation(fields: [student_id], references: [id])
 }
 
-model Students {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  firstName      String    @map("first_name")
-  lastName       String    @map("last_name")
-  birthDate      DateTime  @map("birth_date") @db.Date
-  gender         String?
-  bloodType      String?   @map("blood_type")
-  allergies      String?
-  medicalNotes   String?   @map("medical_notes")
-  photoUrl       String?   @map("photo_url")
-  classId        String    @map("class_id") @db.Uuid
-  schoolId       String    @map("school_id") @db.Uuid
-  isActive       Boolean   @default(true) @map("is_active")
-  enrollmentDate DateTime  @default(now()) @map("enrollment_date") @db.Timestamptz(6)
-  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  // Relations
-  class          Classes          @relation(fields: [classId], references: [id])
-  school         Schools          @relation(fields: [schoolId], references: [id])
-  studentParents StudentParents[]
-
-  @@map("students")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model students {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name      String
+  last_name       String
+  birth_date      DateTime          @db.Date
+  gender          String?
+  blood_type      String?
+  allergies       String?
+  medical_notes   String?
+  photo_url       String?
+  class_id        String            @db.Uuid
+  school_id       String            @db.Uuid
+  is_active       Boolean           @default(true)
+  enrollment_date DateTime          @default(now()) @db.Timestamptz(6)
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime          @default(now()) @db.Timestamptz(6)
+  student_parents student_parents[]
+  classes         classes           @relation(fields: [class_id], references: [id])
+  schools         schools           @relation(fields: [school_id], references: [id])
 }
 
-model StudentParents {
-  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  studentId        String   @map("student_id") @db.Uuid
-  parentId         String   @map("parent_id") @db.Uuid
-  relationship     String   // ENUM values: FATHER, MOTHER, etc.
-  isPrimaryContact Boolean  @default(false) @map("is_primary_contact")
-  canPickup        Boolean  @default(true) @map("can_pickup")
-  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  // Relations
-  student Students @relation(fields: [studentId], references: [id])
-  parent  Users    @relation(fields: [parentId], references: [id])
-
-  @@map("student_parents")
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model users {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email           String            @unique
+  password_hash   String
+  first_name      String
+  last_name       String
+  phone           String?
+  avatar_url      String?
+  role_id         String            @db.Uuid
+  school_id       String            @db.Uuid
+  is_active       Boolean           @default(true)
+  last_login      DateTime?         @db.Timestamptz(6)
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime          @default(now()) @db.Timestamptz(6)
+  student_parents student_parents[]
+  schools         schools           @relation(fields: [school_id], references: [id])
 }

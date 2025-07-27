@@ -1,7 +1,8 @@
 import { IBaseService, IBaseServiceAction } from "./baseService.types";
 
 import { BaseResponseDto } from "kidcare-bridge-shared";
-import { endpoints } from "../apolloClient";
+import { endpoints } from "../endPoints";
+import { unknownErrorMessage } from "../errorManagement";
 import { useState } from "react";
 
 export const useBaseService = <TVariables, TResponseData>({
@@ -9,7 +10,7 @@ export const useBaseService = <TVariables, TResponseData>({
   method = "POST",
   endpoint = "BACKEND",
   onAfterError,
-}: IBaseService<TResponseData>) => {
+}: IBaseService) => {
   const [error, setError] = useState<string>();
   const [data, setData] = useState<BaseResponseDto<TResponseData>>();
   const [loading, setLoading] = useState(false);
@@ -21,8 +22,6 @@ export const useBaseService = <TVariables, TResponseData>({
     });
   };
 
-  const unknownErrorMessage: string = "An error occurred";
-
   const action = async ({
     variables,
   }: IBaseServiceAction<TVariables>): Promise<
@@ -33,7 +32,7 @@ export const useBaseService = <TVariables, TResponseData>({
 
     try {
       const endpointConfig = endpoints[endpoint];
-
+      console.log("endpointConfig", endpointConfig);
       if (!endpointConfig.uri) {
         return {
           success: false,
@@ -47,6 +46,8 @@ export const useBaseService = <TVariables, TResponseData>({
 
       const response = await fetch(`${endpointConfig.uri}${path || ""}`, {
         method: method,
+        credentials: "include", // Cookie'ler için gerekli
+
         headers: {
           "Content-Type": "application/json",
           ...endpointConfig.headers,
@@ -72,6 +73,7 @@ export const useBaseService = <TVariables, TResponseData>({
         return result;
       } else if (result.errors) {
         const errorMessage = result.errors?.map((m) => m.message).join(", ");
+        onAfterError?.(errorMessage);
         setError(errorMessage);
         setLoading(false);
       }
@@ -91,8 +93,7 @@ export const useBaseService = <TVariables, TResponseData>({
         ],
       };
 
-      console.error(backendError);
-      onAfterError?.(backendError);
+      onAfterError?.(unknownErrorMessage);
       return backendError;
     }
   };

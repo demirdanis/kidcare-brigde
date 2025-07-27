@@ -9,54 +9,12 @@ object_relationships:
     using:
       foreign_key_constraint_on: school_id
 array_relationships:
-  - name: custom_notifications
-    using:
-      foreign_key_constraint_on:
-        column: student_id
-        table:
-          name: custom_notifications
-          schema: public
-  - name: daily_reports
-    using:
-      foreign_key_constraint_on:
-        column: student_id
-        table:
-          name: daily_reports
-          schema: public
-  - name: media
-    using:
-      foreign_key_constraint_on:
-        column: student_id
-        table:
-          name: media
-          schema: public
-  - name: medications
-    using:
-      foreign_key_constraint_on:
-        column: student_id
-        table:
-          name: medications
-          schema: public
-  - name: pickup_notifications
-    using:
-      foreign_key_constraint_on:
-        column: student_id
-        table:
-          name: pickup_notifications
-          schema: public
   - name: student_parents
     using:
       foreign_key_constraint_on:
         column: student_id
         table:
           name: student_parents
-          schema: public
-  - name: student_payments
-    using:
-      foreign_key_constraint_on:
-        column: student_id
-        table:
-          name: student_payments
           schema: public
 select_permissions:
   - role: student_parent

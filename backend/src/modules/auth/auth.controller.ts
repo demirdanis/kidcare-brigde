@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Res,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,11 +17,12 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
-import { Public } from './decorators/public.decorator';
-import { CurrentUserType } from './types/user.types';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Public } from '../../common/decorators/public.decorator';
+import { CurrentUserType } from '../../common/types/user.types';
 import { AuthResponseDto } from 'kidcare-bridge-shared';
+import { Response } from 'express';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -40,8 +42,11 @@ export class AuthController {
     status: 401,
     description: 'Invalid credentials',
   })
-  async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
-    return this.authService.login(loginDto);
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<AuthResponseDto> {
+    return await this.authService.login(loginDto, res);
   }
 
   @Public()
@@ -60,6 +65,25 @@ export class AuthController {
     return this.authService.register(registerDto);
   }
 
+  @Public()
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'User logout' })
+  @ApiResponse({
+    status: 200,
+    description: 'Logout successful',
+  })
+  logout(@Res({ passthrough: true }) res: Response): { success: boolean } {
+    res.clearCookie('token', {
+      domain: process.env.TOKEN_DOMAIN,
+      path: '/',
+      httpOnly: false,
+      sameSite: 'lax',
+      secure: false,
+    });
+
+    return { success: true };
+  }
   @Get('profile')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

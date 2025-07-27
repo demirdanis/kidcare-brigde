@@ -1,27 +1,22 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 
-import { AuthDto, AuthResponseDto } from 'kidcare-bridge-shared';
-import {
-  ConflictException,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { AuthDto, AuthResponseDto, IJwtPayload } from 'kidcare-bridge-shared';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   SafeUserWithSchool,
   USER_WITH_SCHOOL_INCLUDE,
-} from './types/user.types';
+} from '../../common/types/user.types';
 
 import { ConfigService } from '@nestjs/config';
-import { JwtPayload } from './types/jwt.types';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos/login.dto';
 import { PrismaService } from '../../database/prisma/prisma.service';
 import { RegisterDto } from './dtos/register.dto';
-import { getRoleHasuraKeyById } from './utils/role.utils';
-import { prepareErrorResponse } from 'src/utils/error.utils';
-import { prepareSuccessResponse } from 'src/utils/succes.utils';
+import { Response } from 'express';
+import { getRoleHasuraKeyById } from '../../common/utils/role.utils';
+import { prepareErrorResponse } from '../../utils/error.utils';
+import { prepareSuccessResponse } from '../../utils/succes.utils';
 
 @Injectable()
 export class AuthService {
@@ -38,11 +33,14 @@ export class AuthService {
     password: string,
   ): Promise<SafeUserWithSchool | null> {
     try {
+      const newHash = await bcrypt.hash('test', 12);
+      console.log('newHash', newHash);
       const user = await this.prisma.users.findUnique({
         where: {
           email,
-          isActive: true,
+          is_active: true,
         },
+
         include: USER_WITH_SCHOOL_INCLUDE,
       });
 
@@ -51,14 +49,17 @@ export class AuthService {
         return null;
       }
 
-      if (!user.school?.isActive) {
+      if (!user.schools?.is_active) {
         this.logger.warn(
-          `Login attempt for inactive school: ${user.school?.name}`,
+          `Login attempt for inactive school: ${user.schools?.name}`,
         );
         return null;
       }
 
-      const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        user.password_hash,
+      );
 
       if (!isPasswordValid) {
         this.logger.warn(`Invalid password attempt for user: ${email}`);
@@ -68,7 +69,7 @@ export class AuthService {
       // Update last login
       await this.prisma.users.update({
         where: { id: user.id },
-        data: { lastLogin: new Date() },
+        data: { last_login: new Date() },
       });
 
       return user;
@@ -78,14 +79,27 @@ export class AuthService {
     }
   }
 
-  async login(loginDto: LoginDto): Promise<AuthResponseDto> {
+  async login(loginDto: LoginDto, res: Response): Promise<AuthResponseDto> {
     const user = await this.validateUser(loginDto.email, loginDto.password);
 
     if (!user) {
       return prepareErrorResponse('Invalid credentials');
     }
 
-    return this.generateTokenResponse(user);
+    const tokenResponse = this.generateTokenResponse(user);
+
+    if (tokenResponse.data?.access_token) {
+      res.cookie('token', tokenResponse.data.access_token, {
+        domain: process.env.TOKEN_DOMAIN,
+        path: '/',
+        httpOnly: false,
+        sameSite: 'lax',
+        secure: false,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+    }
+
+    return tokenResponse;
   }
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -107,13 +121,13 @@ export class AuthService {
       const user = await this.prisma.users.create({
         data: {
           email: registerDto.email,
-          passwordHash,
-          firstName: registerDto.firstName,
-          lastName: registerDto.lastName,
+          password_hash: passwordHash,
+          first_name: registerDto.firstName,
+          last_name: registerDto.lastName,
           phone: registerDto.phone,
-          roleId: registerDto.roleId,
-          schoolId: registerDto.schoolId,
-          isActive: true,
+          role_id: registerDto.roleId,
+          school_id: registerDto.schoolId,
+          is_active: true,
         },
         include: USER_WITH_SCHOOL_INCLUDE,
       });
@@ -131,12 +145,12 @@ export class AuthService {
     const user = await this.prisma.users.findUnique({
       where: {
         id: userId,
-        isActive: true,
+        is_active: true,
       },
       include: USER_WITH_SCHOOL_INCLUDE,
     });
 
-    if (!user || !user.school?.isActive) {
+    if (!user || !user.schools?.is_active) {
       return prepareErrorResponse('Invalid credentials');
     }
 
@@ -154,11 +168,11 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        roleId: user.roleId,
-        schoolId: user.schoolId,
-        school: user.school,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        roleId: user.role_id,
+        schoolId: user.school_id,
+        school: user.schools,
       },
     });
   }
@@ -167,7 +181,7 @@ export class AuthService {
     user: SafeUserWithSchool,
     expiresIn: string,
   ): string {
-    const hasuraRoleKey = getRoleHasuraKeyById(user.roleId) || '';
+    const hasuraRoleKey = getRoleHasuraKeyById(user.role_id) || '';
 
     const hasuraClaims = {
       'x-hasura-user-id': user.id,
@@ -176,12 +190,12 @@ export class AuthService {
       'x-hasura-allowed-roles': [hasuraRoleKey],
     };
 
-    const jwtPayload: JwtPayload = {
+    const jwtPayload: IJwtPayload = {
       user_id: user.id,
-      first_name: user.firstName || '',
-      last_name: user.lastName || '',
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
       email: user.email,
-      schoolId: user.schoolId,
+      schoolId: user.school_id,
       roles: [hasuraRoleKey],
       'https://hasura.io/jwt/claims': hasuraClaims,
     };

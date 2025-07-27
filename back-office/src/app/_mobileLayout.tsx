@@ -3,6 +3,8 @@
 import { Home, LogOut, Menu, Settings, Users, X } from "lucide-react";
 
 import { mockDataService } from "@/services/mockDataService";
+import { useLogout } from "./login/_services/logout/logout.service";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function MobileLayout({
@@ -10,6 +12,9 @@ export default function MobileLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { action: logout } = useLogout();
+  const router = useRouter();
+
   const [showMenu, setShowMenu] = useState(false);
 
   const toggleMenu = () => {
@@ -18,6 +23,14 @@ export default function MobileLayout({
 
   const closeMenu = () => {
     setShowMenu(false);
+  };
+
+  const handleLogout = async () => {
+    const res = await logout({});
+
+    if (res.success) {
+      router.push("/login");
+    }
   };
 
   return (
@@ -225,7 +238,7 @@ export default function MobileLayout({
                 </button>
                 <div className="border-t border-gray-200 my-6"></div>
                 <button
-                  onClick={closeMenu}
+                  onClick={handleLogout}
                   className="w-full flex items-center space-x-4 p-4 rounded-2xl bg-gradient-to-r from-red-50 to-pink-50 hover:from-red-100 hover:to-pink-100 text-red-600 transition-all duration-300 text-left transform hover:scale-105"
                 >
                   <LogOut size={22} />

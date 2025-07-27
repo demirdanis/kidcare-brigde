@@ -1,11 +1,10 @@
-import { BaseResponseDto } from "kidcare-bridge-shared";
-import { TServiceEndpoint } from "../apolloClient";
+import { TServiceEndpoint } from "../endPoints";
 
-export interface IBaseService<TResponseData> {
+export interface IBaseService {
   endpoint?: TServiceEndpoint;
   path: string;
   method?: THttpMethod;
-  onAfterError?: (response: BaseResponseDto<TResponseData> | null) => void;
+  onAfterError?: (errorMessage: string) => void;
 }
 
 export type TBaseQueryServiceVariable = object | Array<object>;

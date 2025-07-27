@@ -9,61 +9,12 @@ array_relationships:
         table:
           name: classes
           schema: public
-  - name: conversations
-    using:
-      foreign_key_constraint_on:
-        column: school_id
-        table:
-          name: conversations
-          schema: public
-  - name: daily_report_items
-    using:
-      foreign_key_constraint_on:
-        column: school_id
-        table:
-          name: daily_report_items
-          schema: public
-  - name: meals
-    using:
-      foreign_key_constraint_on:
-        column: school_id
-        table:
-          name: meals
-          schema: public
-  - name: media
-    using:
-      foreign_key_constraint_on:
-        column: school_id
-        table:
-          name: media
-          schema: public
-  - name: payment_plans
-    using:
-      foreign_key_constraint_on:
-        column: school_id
-        table:
-          name: payment_plans
-          schema: public
-  - name: school_payments
-    using:
-      foreign_key_constraint_on:
-        column: school_id
-        table:
-          name: school_payments
-          schema: public
   - name: students
     using:
       foreign_key_constraint_on:
         column: school_id
         table:
           name: students
-          schema: public
-  - name: subjects
-    using:
-      foreign_key_constraint_on:
-        column: school_id
-        table:
-          name: subjects
           schema: public
   - name: users
     using:

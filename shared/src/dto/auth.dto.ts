@@ -18,13 +18,7 @@ export class AuthDto {
   user!: UserDto;
 }
 
-export class AuthResponseDto extends BaseResponseDto<AuthDto> {
-  @ApiProperty({
-    description: "Auth response data",
-    type: () => AuthDto,
-  })
-  data?: AuthDto;
-}
+export class AuthResponseDto extends BaseResponseDto<AuthDto> {}
 
 export class AuthRequestDto {
   @ApiProperty({
