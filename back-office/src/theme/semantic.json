@@ -1,102 +1,114 @@
 {
-  "destructive-foreground": {
-    "light": "base/white",
-    "dark": "neutral/900"
-  },
-  "border": {
-    "light": "neutral/300",
-    "dark": "neutral/700"
-  },
-  "input": {
-    "light": "neutral/300",
-    "dark": "neutral/700"
-  },
-  "ring": {
-    "light": "sky/500",
-    "dark": "sky/400"
-  },
-  "secondary-brand": {
-    "light": "slate/600",
-    "dark": "slate/400"
-  },
-  "secondary-brand-hover": {
-    "light": "slate/700",
-    "dark": "slate/500"
-  },
-  "secondary-brand-back": {
-    "light": "slate/50",
-    "dark": "slate/950"
-  },
   "background": {
-    "light": "base/white",
-    "dark": "neutral/900"
+    "light": "theme/light-bg",
+    "dark": "theme/dark-bg"
   },
   "foreground": {
-    "light": "neutral/900",
-    "dark": "base/white"
+    "light": "theme/light-fg",
+    "dark": "theme/dark-fg"
   },
   "card": {
-    "light": "base/white",
-    "dark": "neutral/900"
+    "light": "theme/light-card",
+    "dark": "theme/dark-card"
   },
   "card-foreground": {
-    "light": "neutral/900",
-    "dark": "base/white"
+    "light": "theme/light-fg",
+    "dark": "theme/dark-fg"
   },
   "popover": {
-    "light": "base/white",
-    "dark": "neutral/900"
+    "light": "theme/light-card",
+    "dark": "theme/dark-card"
   },
   "popover-foreground": {
-    "light": "neutral/900",
-    "dark": "base/white"
+    "light": "theme/light-fg",
+    "dark": "theme/dark-fg"
   },
   "primary": {
-    "light": "sky/600",
-    "dark": "sky/500"
+    "light": "theme/light-primary",
+    "dark": "theme/dark-primary"
   },
   "primary-foreground": {
     "light": "base/white",
-    "dark": "neutral/900"
+    "dark": "theme/dark-fg"
   },
   "primary-hover": {
-    "light": "sky/700",
-    "dark": "sky/600"
+    "light": "theme/light-primary-hover",
+    "dark": "theme/dark-primary-hover"
+  },
+  "primary-light": {
+    "light": "theme/light-primary-light",
+    "dark": "theme/dark-primary-light"
+  },
+  "primary-lighter": {
+    "light": "theme/light-primary-lighter",
+    "dark": "theme/dark-primary-lighter"
   },
   "secondary": {
-    "light": "neutral/100",
-    "dark": "neutral/800"
+    "light": "theme/light-secondary",
+    "dark": "theme/dark-secondary"
   },
   "secondary-foreground": {
-    "light": "neutral/600",
-    "dark": "neutral/300"
+    "light": "theme/light-fg",
+    "dark": "theme/dark-fg"
   },
   "secondary-hover": {
-    "light": "neutral/200",
-    "dark": "neutral/700"
+    "light": "theme/light-secondary-hover",
+    "dark": "theme/dark-secondary-hover"
   },
   "muted": {
-    "light": "neutral/100",
-    "dark": "neutral/800"
+    "light": "theme/light-muted",
+    "dark": "theme/dark-muted"
   },
   "muted-foreground": {
-    "light": "neutral/500",
-    "dark": "neutral/300"
+    "light": "theme/light-muted-fg",
+    "dark": "theme/dark-muted-fg"
+  },
+  "muted-hover": {
+    "light": "theme/light-muted-hover",
+    "dark": "theme/dark-muted-hover"
   },
   "accent": {
-    "light": "pink/50",
-    "dark": "pink/900"
+    "light": "theme/light-accent",
+    "dark": "theme/dark-accent"
   },
   "accent-foreground": {
-    "light": "pink/900",
-    "dark": "pink/100"
+    "light": "theme/light-fg",
+    "dark": "theme/dark-fg"
+  },
+  "accent-hover": {
+    "light": "theme/light-accent-hover",
+    "dark": "theme/dark-accent-hover"
   },
   "destructive": {
-    "light": "rose/600",
-    "dark": "rose/500"
+    "light": "theme/light-destructive",
+    "dark": "theme/dark-destructive"
+  },
+  "destructive-foreground": {
+    "light": "base/white",
+    "dark": "theme/dark-fg"
   },
   "destructive-hover": {
-    "light": "rose/700",
-    "dark": "rose/400"
+    "light": "theme/light-destructive-hover",
+    "dark": "theme/dark-destructive-hover"
+  },
+  "border": {
+    "light": "theme/light-border",
+    "dark": "theme/dark-border"
+  },
+  "border-hover": {
+    "light": "theme/light-border-hover",
+    "dark": "theme/dark-border-hover"
+  },
+  "input": {
+    "light": "theme/light-input",
+    "dark": "theme/dark-input"
+  },
+  "input-hover": {
+    "light": "theme/light-input-hover",
+    "dark": "theme/dark-input-hover"
+  },
+  "ring": {
+    "light": "theme/light-ring",
+    "dark": "theme/dark-ring"
   }
 }

@@ -28,23 +28,32 @@ interface SemanticTokens {
   };
 }
 
+interface Properties {
+  [category: string]: {
+    [property: string]: string;
+  };
+}
+
 class ThemeGenerator {
   private readonly backOfficeRoot: string;
   private readonly paths: {
     color: string;
     semantic: string;
+    properties: string;
     output: string;
     tailwindConfig: string;
   };
 
   private colorTokens: ColorTokens;
   private semanticTokens: SemanticTokens;
+  private properties: Properties;
 
   constructor() {
     this.backOfficeRoot = this.resolveBackOfficeRoot();
     this.paths = this.initializePaths();
     this.colorTokens = this.loadColorTokens();
     this.semanticTokens = this.loadSemanticTokens();
+    this.properties = this.loadProperties();
   }
 
   /**
@@ -69,6 +78,10 @@ class ThemeGenerator {
     return {
       color: path.resolve(this.backOfficeRoot, "src/theme/color.json"),
       semantic: path.resolve(this.backOfficeRoot, "src/theme/semantic.json"),
+      properties: path.resolve(
+        this.backOfficeRoot,
+        "src/theme/properties.json"
+      ),
       output: path.resolve(this.backOfficeRoot, "src/theme/theme.css"),
       tailwindConfig: path.resolve(this.backOfficeRoot, "tailwind.config.js"),
     };
@@ -111,6 +124,24 @@ class ThemeGenerator {
   }
 
   /**
+   * Load and validate properties
+   */
+  private loadProperties(): Properties {
+    try {
+      if (!fs.existsSync(this.paths.properties)) {
+        console.warn(`⚠️  Properties file not found: ${this.paths.properties}`);
+        return {};
+      }
+
+      const content = fs.readFileSync(this.paths.properties, "utf-8");
+      return JSON.parse(content);
+    } catch (error) {
+      console.warn(`⚠️  Failed to load properties: ${getErrorMessage(error)}`);
+      return {};
+    }
+  }
+
+  /**
    * Resolve color reference to actual hex value
    */
   private resolveColorReference(reference: string): string {
@@ -130,6 +161,27 @@ class ThemeGenerator {
     }
 
     return this.colorTokens[group][shade];
+  }
+
+  /**
+   * Generate CSS properties variables
+   */
+  private generateCSSProperties(): string {
+    if (Object.keys(this.properties).length === 0) {
+      return "";
+    }
+
+    let variables = "";
+
+    Object.entries(this.properties).forEach(([category, props]) => {
+      Object.entries(props).forEach(([key, value]) => {
+        const variableName =
+          key === "default" ? category : `${category}-${key}`;
+        variables += `  --${variableName}: ${value};\n`;
+      });
+    });
+
+    return variables;
   }
 
   /**
@@ -169,9 +221,10 @@ class ThemeGenerator {
   private generateThemeCSS(): string {
     const lightVariables = this.generateCSSVariables("light");
     const darkVariables = this.generateCSSVariables("dark");
+    const cssProperties = this.generateCSSProperties();
 
     return `:root {
-${lightVariables}
+${lightVariables}${cssProperties ? "\n" + cssProperties : ""}
 }
 
 [data-theme="dark"] {
@@ -201,16 +254,62 @@ ${darkVariables}
   }
 
   /**
-   * Extract colors configuration for Tailwind
+   * Extract colors configuration for Tailwind with proper nested structure
    */
   private generateTailwindColors(): string {
-    return Object.keys(this.semanticTokens)
-      .map((tokenName) => `        "${tokenName}": "var(--${tokenName})",`)
-      .join("\n");
+    const baseColors = ["border", "input", "ring", "background", "foreground"];
+
+    const nestedColors = [
+      "primary",
+      "secondary",
+      "destructive",
+      "muted",
+      "accent",
+      "popover",
+      "card",
+    ];
+
+    const subKeys = ["foreground", "hover", "light", "lighter"]; // desteklenen varyasyonlar
+
+    let colorConfig = "";
+
+    // Add base colors
+    baseColors.forEach((color) => {
+      if (this.semanticTokens[color]) {
+        colorConfig += `        ${color}: "var(--${color})",\n`;
+      }
+    });
+
+    // Add nested colors
+    nestedColors.forEach((color) => {
+      const hasDefault = this.semanticTokens[color];
+      const hasAnySub = subKeys.some(
+        (subKey) => this.semanticTokens[`${color}-${subKey}`]
+      );
+
+      if (hasDefault || hasAnySub) {
+        colorConfig += `        ${color}: {\n`;
+
+        if (hasDefault) {
+          colorConfig += `          DEFAULT: "var(--${color})",\n`;
+        }
+
+        subKeys.forEach((subKey) => {
+          const key = `${color}-${subKey}`;
+          if (this.semanticTokens[key]) {
+            colorConfig += `          ${subKey}: "var(--${key})",\n`;
+          }
+        });
+
+        colorConfig += `        },\n`;
+      }
+    });
+
+    return colorConfig.trimEnd();
   }
 
   /**
-   * Update Tailwind configuration file
+   * Update Tailwind configuration file with proper nested structure
    */
   private updateTailwindConfig(): void {
     try {
@@ -223,20 +322,54 @@ ${darkVariables}
 
       let tailwindConfig = fs.readFileSync(this.paths.tailwindConfig, "utf-8");
 
-      const colorsStartIndex = tailwindConfig.indexOf("colors: {");
-      if (colorsStartIndex === -1) {
+      // Find colors section start
+      const colorsStartPattern = /colors:\s*{/;
+      const colorsStartMatch = tailwindConfig.match(colorsStartPattern);
+
+      if (!colorsStartMatch) {
         console.warn("⚠️  Colors section not found in Tailwind config");
         return;
       }
 
-      const colorsEndIndex = tailwindConfig.indexOf("},", colorsStartIndex);
-      if (colorsEndIndex === -1) {
-        console.warn("⚠️  Colors section end not found in Tailwind config");
-        return;
+      const colorsStartIndex = tailwindConfig.indexOf(colorsStartMatch[0]);
+      const searchStart = colorsStartIndex + colorsStartMatch[0].length;
+
+      // Find the matching closing brace for colors section
+      let braceCount = 1;
+      let colorsEndIndex = searchStart;
+      let inString = false;
+      let stringChar = "";
+
+      for (let i = searchStart; i < tailwindConfig.length; i++) {
+        const char = tailwindConfig[i];
+
+        if (!inString && (char === '"' || char === "'")) {
+          inString = true;
+          stringChar = char;
+        } else if (
+          inString &&
+          char === stringChar &&
+          tailwindConfig[i - 1] !== "\\"
+        ) {
+          inString = false;
+        } else if (!inString) {
+          if (char === "{") {
+            braceCount++;
+          } else if (char === "}") {
+            braceCount--;
+            if (braceCount === 0) {
+              colorsEndIndex = i;
+              break;
+            }
+          }
+        }
       }
 
       const newColors = this.generateTailwindColors();
-      const beforeColors = tailwindConfig.slice(0, colorsStartIndex + 9);
+      const beforeColors = tailwindConfig.slice(
+        0,
+        colorsStartIndex + colorsStartMatch[0].length
+      );
       const afterColors = tailwindConfig.slice(colorsEndIndex);
 
       tailwindConfig = `${beforeColors}\n${newColors}\n      ${afterColors}`;
@@ -258,13 +391,17 @@ ${darkVariables}
     console.info(`   Root directory: ${this.backOfficeRoot}`);
     console.info(`   Color tokens: ${this.paths.color}`);
     console.info(`   Semantic tokens: ${this.paths.semantic}`);
+    console.info(`   Properties: ${this.paths.properties}`);
     console.info(`   Output CSS: ${this.paths.output}`);
     console.info(`   Tailwind config: ${this.paths.tailwindConfig}`);
     console.info(
       `   Total semantic tokens: ${Object.keys(this.semanticTokens).length}`
     );
     console.info(
-      `   Total color groups: ${Object.keys(this.colorTokens).length}\n`
+      `   Total color groups: ${Object.keys(this.colorTokens).length}`
+    );
+    console.info(
+      `   Total property categories: ${Object.keys(this.properties).length}\n`
     );
   }
 

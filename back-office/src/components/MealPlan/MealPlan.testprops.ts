@@ -1,0 +1,108 @@
+import { IMealPlan } from "./MealPlan.types";
+import { mealsOfTheDayEmptySelected } from "../MealsOfTheDay/MealsOfTheDay.testprops";
+
+export const mealPlanContainerTestProps: IMealPlan = {
+  days: [
+    {
+      id: "monday",
+      dayName: "Pazartesi",
+      date: "15 Ocak",
+      meals: [
+        {
+          id: "breakfast-monday",
+          name: "Kahvaltı",
+          time: "08:00",
+          icon: "🌅",
+          selectedFoods: ["Peynir", "Zeytin"],
+          isExpanded: false,
+        },
+        {
+          id: "lunch-monday",
+          name: "Öğle",
+          time: "12:00",
+          icon: "🍽️",
+          selectedFoods: ["Mercimek Çorbası"],
+          isExpanded: false,
+        },
+        {
+          id: "snack-monday",
+          name: "İkindi",
+          time: "15:30",
+          icon: "🍪",
+          selectedFoods: ["Meyve"],
+          isExpanded: false,
+        },
+      ],
+      isExpanded: false,
+    },
+    {
+      id: "tuesday",
+      dayName: "Salı",
+      date: "16 Ocak",
+      meals: [
+        {
+          id: "breakfast-monday",
+          name: "Kahvaltı",
+          time: "08:00",
+          icon: "🌅",
+          selectedFoods: ["Peynir", "Zeytin"],
+          isExpanded: false,
+        },
+        {
+          id: "lunch-monday",
+          name: "Öğle",
+          time: "12:00",
+          icon: "🍽️",
+          selectedFoods: [],
+          isExpanded: false,
+        },
+        {
+          id: "snack-monday",
+          name: "İkindi",
+          time: "15:30",
+          icon: "🍪",
+          selectedFoods: [],
+          isExpanded: false,
+        },
+      ],
+      isExpanded: false,
+    },
+    {
+      id: "wednesday",
+      dayName: "Çarşamba",
+      date: "17 Ocak",
+      meals: mealsOfTheDayEmptySelected,
+      isExpanded: false,
+    },
+    {
+      id: "thursday",
+      dayName: "Perşembe",
+      date: "18 Ocak",
+      meals: mealsOfTheDayEmptySelected,
+      isExpanded: false,
+    },
+    {
+      id: "friday",
+      dayName: "Cuma",
+      date: "19 Ocak",
+      meals: mealsOfTheDayEmptySelected,
+      isExpanded: false,
+    },
+  ],
+  suggestions: [
+    "Peynir",
+    "Zeytin",
+    "Yumurta",
+    "Süt",
+    "Bal",
+    "Reçel",
+    "Ekmek",
+    "Tereyağı",
+    "Meyve",
+    "Bisküvi",
+    "Mercimek Çorbası",
+    "Pilav",
+    "Tavuk",
+    "Salata",
+  ],
+};

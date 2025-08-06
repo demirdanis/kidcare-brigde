@@ -1,0 +1,49 @@
+@tailwind utilities;
+
+@layer utilities {
+  .text-gradient-rainbow {
+    @apply bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent;
+  }
+  .bg-card {
+    background-color: transparent;
+  }
+
+  .bg-soft-gradient {
+    background: linear-gradient(
+      135deg,
+      rgb(from var(--primary) r g b / 0.1) 0%,
+      rgb(from var(--accent) r g b / 0.1) 50%,
+      rgb(from var(--secondary) r g b / 0.1) 100%
+    );
+  }
+  .card-pastel {
+    @apply bg-gradient-to-br from-card via-accent/5 to-secondary/5 backdrop-blur-sm;
+  }
+
+  .btn-soft {
+    background: linear-gradient(
+      to right,
+      rgb(from var(--primary) r g b / 1),
+      rgb(from var(--primary) r g b / 0.8)
+    );
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1),
+      0 4px 6px -4px rgb(0 0 0 / 0.1);
+    transition: all 300ms ease;
+  }
+
+  .btn-soft:hover {
+    background: linear-gradient(
+      to right,
+      rgb(from var(--primary) r g b / 0.9),
+      rgb(from var(--primary) r g b / 0.7)
+    );
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  }
+
+  .ui-input:focus-visible,
+  input[type="text"]:focus-visible,
+  input[type="email"]:focus-visible,
+  input[type="password"]:focus-visible {
+    --tw-ring-shadow: 0 0 0 calc(1px + 0px) rgb(from var(--ring) r g b / 0.5);
+  }
+}

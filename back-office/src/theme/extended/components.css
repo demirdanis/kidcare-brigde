@@ -1,0 +1,6 @@
+@tailwind components;
+@layer components {
+  .white-input {
+    background-color: white !important;
+  }
+}
